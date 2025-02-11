@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+</head>
+<body>
+  <h1>Toggl Time Entry Retrieval</h1>
+  <label for="startDate">Start Date:</label>
+  <input type="date" id="startDate"><br><br>
+
+  <label for="endDate">End Date:</label>
+  <input type="date" id="endDate"><br><br>
+
+  <button onclick="getTimeEntries()">Get Entries</button>
+
+  <script>
+    function getTimeEntries() {
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+
+      google.script.run
+      .withSuccessHandler(data => {
+          if (data) {  // Check if data is not null
+            google.script.run.writeTimeToSpreadsheet(data, "YOUR_SPREADSHEET_ID", "TogglTimeEntries");
+            alert("Time entries retrieved and written to spreadsheet!");
+          } else {
+            alert("No time entries found for the selected date range.");
+          }
+        })
+      .withFailureHandler(error => {
+          alert("Error retrieving time entries: " + error.message);
+        })
+      .getTimeEntriesFromSidebar(startDate, endDate); // Call server-side function
+    }
+  </script>
+</body>
+</html>
